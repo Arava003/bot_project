@@ -1,5 +1,7 @@
 import telebot
 from math import sqrt
+from datetime import datetime
+from random import randint, choice
 
 bot = telebot.TeleBot("6201499506:AAGkJeT6ahdVPbrFcRjcilaJNCjzqThnYU4")
 
@@ -24,6 +26,9 @@ def help(message):
 /vectors_sub - нахождение разницы 2-х по их координатам
 /middle_of_segm - нахождение координат середины отрезка по координатам его концов
 /length_of_segm - нахождение длины середины отрезка по координатам его концов
+/date - выводит дату и время
+/rand_num - выбирает рандомное число
+/random - выводит рандомно одно слово из тех, что вы предали
 Если вы используете команду в первый раз, рекомендуем подробнее узнать о команде,
 прописав help <название команды>, например help percent
 Если же вы хотите узнать как работает команда, рекомендуем подробнее узнать о команде,
@@ -71,15 +76,37 @@ def help(message):
 например /length_of_segm 1 1 5 5
 Эта команда выведет длину отрезка (1;1) (5;5),
 то-есть 5,657""")
-    elif len(parts) == 2 and parts[1].lower() == "vectors_sub":
-        pass
+    elif len(parts) == 2 and parts[1].lower() == "help":
+        bot.reply_to(message, """
+Просто введите /help, чтобы посмотреть доступные команды
+Чтобы узнать, как работает команда, напишите /help <название команды>""")
+    elif len(parts) == 2 and parts[1].lower() == "info":
+        bot.reply_to(message, """
+Просто введите /info, чтобы узнать, как работает команда,
+напишите /info <название команды>""")
+    elif len(parts) == 2 and parts[1].lower() == "rand_num":
+        bot.reply_to(message, """
+Если просто ввести команду, то она рандомно выдаст число от 1 до 100
+Но можно написать два числа, первое меньше второго, и тогда она выдаст рандомное число в этом промежутке """)
+    elif len(parts) == 2 and parts[1].lower() == "random":
+        bot.reply_to(message, """
+Напишите команду и после неё через пробел слова или что-то ещё,
+ из чего надо что-то рандомно выбрать
+        """)
+    elif len(parts) == 2 and parts[1].lower() == "":
+        bot.reply_to(message, """
+        """)
+    elif len(parts) == 2 and parts[1].lower() == "":
+        bot.reply_to(message, """
+        """)
 
 
 @bot.message_handler(commands=['info'])
 def info(message):
     parts = message.text.split(' ')
     if len(parts) == 1:
-        bot.reply_to(message, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        bot.reply_to(message, """Эта команда может рассказать, как работают некоторые команды этого бота
+Чтобы узнать, как работают команды, пропишите /info <назваие команды>""")
     elif len(parts) == 2 and parts[1].lower() in "percent":
         bot.reply_to(message, """
 Чтобы найти процент от числа надо это 
@@ -123,7 +150,25 @@ def info(message):
 (x1;y1);(x2;y2) -> квадратный корень из (x2-x1)^2+(y2-y1)^2
 Таким образом, при команде /middle_of_segm 1 1 5 5
 получается примерно 5,657)""")
-    elif len(parts) == 2 and parts[1].lower() == "vectors_sub":
+    elif len(parts) == 2 and parts[1].lower() == "help":
+        bot.reply_to(message, """Эта команда подсказывает, как правильно использовать команды""")
+    elif len(parts) == 2 and parts[1].lower() == "info":
+        bot.reply_to(message, """Эта команда рассказывает, как работают некоторые команды""")
+    elif len(parts) == 2 and parts[1].lower() == "rand_num":
+        bot.reply_to(message, """
+Так и работает, выбирает рандомное числов промежутке
+            """)
+    elif len(parts) == 2 and parts[1].lower() == "random":
+        bot.reply_to(message, """
+Так и работает, выбирает рандомное слово и написанных вами
+            """)
+    elif len(parts) == 2 and parts[1].lower() == "":
+        bot.reply_to(message, """
+            """)
+    elif len(parts) == 2 and parts[1].lower() == "":
+        bot.reply_to(message, """
+            """)
+    elif len(parts) == 2 and parts[1].lower() == "":
         pass
 
 
@@ -143,6 +188,7 @@ def handle_percent(message):
 Пример:
 /percent 100 15""")
 
+
 @bot.message_handler(commands=['reduce'])
 def handle_reduce(message):
     try:
@@ -161,6 +207,7 @@ def handle_reduce(message):
 Некорректный запрос
 Пример:
 /reduce 10 25""")
+
 
 @bot.message_handler(commands=['vectors_sum'])
 def vectors_sum(message):
@@ -210,6 +257,7 @@ def vectors_sub(message):
 Пример:
 /vectors_sum 3 5 7 -1""")
 
+
 @bot.message_handler(commands=['middle_of_segm'])
 def middle_of_segm(message):
     try:
@@ -232,6 +280,7 @@ def middle_of_segm(message):
 /middle_of_segm 1 1 5 5
 """)
 
+
 @bot.message_handler(commands=['length_of_segm'])
 def length_of_segm(message):
     try:
@@ -252,6 +301,46 @@ def length_of_segm(message):
 Пример:
 /length_of_segm 1 1 5 5
 """)
+
+
+@bot.message_handler(commands=['date'])
+def date(message):
+    bot.reply_to(message, f"""{datetime.now()}""")
+
+
+@bot.message_handler(commands=['rand_num'])
+def rand_num(message):
+    try:
+        parts = message.text.split(' ')
+        if len(parts) == 1:
+            bot.reply_to(message, f"""{randint(1, 100)}""")
+        elif len(parts) == 3:
+            if int(parts[1]) < int(parts[1]):
+                print('ERROR')
+                raise ValueError()
+            bot.reply_to(message, f"""{randint(int(parts[1]), int(parts[2]))}""")
+    except ValueError:
+        bot.reply_to(message, """
+Некорректный запрос
+Пример:
+/rand_num 1 5
+/rand_num
+""")
+
+
+@bot.message_handler(commands=['random'])
+def rand_num(message):
+    try:
+        parts = message.text.split(' ')
+        if len(parts) == 1:
+            raise ValueError
+        elif len(parts) > 1:
+            bot.reply_to(message, f"""{choice(parts[1:])}""")
+    except ValueError:
+        bot.reply_to(message, """
+Некорректный запрос 
+Пример:
+/random 100 15""")
 
 
 bot.polling()
